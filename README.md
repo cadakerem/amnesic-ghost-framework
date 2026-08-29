@@ -25,6 +25,7 @@ After booting Kali Live, open a terminal **BEFORE connecting to the internet** a
 ```bash
 sudo bash /media/usb_drive/scripts/setup.sh
 ```
+> **New Users:** If you haven't created your encrypted vault yet, please read the [Vault Creation Guide](docs/vault-creation.md) to set up your `hidden_vault.hc` container before proceeding to Step 2.
 
 ### ⚠️ Plan B — Online Installation (Fallback)
 If the offline `.deb` packages on your USB become corrupted or lost, use the `fallback-setup.sh` script. This script operates on a **Minimum IP Disclosure** principle to rebuild your environment from scratch securely.
