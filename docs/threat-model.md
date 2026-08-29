@@ -4,7 +4,7 @@ This document outlines the threat model for the Amnesic Ghost Framework, detaili
 
 ## In-Scope Threats (What this protects against)
 1. **Local Forensic Analysis (Post-Seizure):** 
-   - If the USB drive is seized while powered off, the adversary will only find a standard Kali Live ISO and random encrypted data (`swap_file.sys`).
+   - If the USB drive is seized while powered off, the adversary will only find a standard Kali Live ISO and random encrypted data (`hidden_vault.hc`).
    - No browsing history, IP logs, or system artifacts remain on the host machine.
 2. **Network Interception (ISP/Local Admin):**
    - The local ISP or network administrator will only see encrypted Tor traffic. They cannot see the destination websites or the content of the traffic.

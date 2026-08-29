@@ -20,7 +20,7 @@ sudo anonsurf start
 echo "[4/4] Installing VeraCrypt and dependencies via Tor Tunnel..."
 # Assuming user's veracrypt deb files are inside EFI_Boot
 # If they are missing, they can be wget'ed while the Tor tunnel is active.
-DEPO="/run/media/kali/EFI_Boot"
+DEPO="/media/usb_drive"
 if [ -d "$DEPO" ]; then
     sudo dpkg -i "$DEPO"/libwx*.deb 2>/dev/null
     sudo dpkg -i "$DEPO"/veracrypt*.deb 2>/dev/null
