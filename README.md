@@ -27,7 +27,13 @@ sudo bash /run/media/kali/EFI_Boot/scripts/setup.sh
 ```
 
 ### ⚠️ Plan B — Online Installation (Fallback)
-If the offline `.deb` packages on your USB become corrupted, use the `fallback-setup.sh` script. This script operates on a **Minimum IP Disclosure** principle: it installs only Tor using your real IP, and then securely downloads everything else (including VeraCrypt) anonymously through the Tor tunnel:
+If the offline `.deb` packages on your USB become corrupted or lost, use the `fallback-setup.sh` script. This script operates on a **Minimum IP Disclosure** principle to rebuild your environment from scratch securely.
+
+**How it works under the hood:**
+1. **Initial Clear-Net Connection:** It briefly uses your real IP address *only* to run `apt update` and install the base `tor`, `i2p`, and `secure-delete` dependencies.
+2. **Tor Deployment:** It clones the Anonsurf repository from GitHub and installs it locally.
+3. **Tunnel Activation:** Immediately starts `anonsurf`, forcing all subsequent TCP and DNS traffic through the Tor network.
+4. **Anonymous Payload Delivery:** Once the Tor tunnel is active, it securely installs the sensitive packages (like VeraCrypt) without your real IP address ever pinging those servers.
 ```bash
 sudo bash /run/media/kali/EFI_Boot/scripts/fallback-setup.sh
 ```
