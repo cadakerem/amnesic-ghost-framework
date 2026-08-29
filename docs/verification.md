@@ -28,4 +28,3 @@ The script automatically launches Firefox ESR with the following tabs to visuall
 - **Site:** `https://amiunique.org/` or `https://browserleaks.com/javascript`
 - **Expected Result:** Due to `privacy.resistFingerprinting = true`, the browser should blend in with generic Firefox Tor bundles, mitigating unique canvas or font tracking.
 
-*(Screenshots of successful verifications will be placed in the `screenshots/` directory.)*
