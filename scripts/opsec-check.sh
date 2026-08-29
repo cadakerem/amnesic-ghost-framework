@@ -1,42 +1,42 @@
 #!/bin/bash
 
 echo "============================================="
-echo "   🛡️ OPSEC KONTROL MERKEZİ (INSPECTOR) 🛡️"
+echo "   🛡️ OPSEC INSPECTION CENTER (VALIDATOR) 🛡️"
 echo "============================================="
-echo "Bu betik, ghost.sh tarafindan yapilan gizlilik"
-echo "ayarlarini denetler ve test sitelerini acar."
+echo "This script verifies the privacy settings"
+echo "configured by ghost.sh and launches test sites."
 echo "---------------------------------------------"
 
-echo "[1/4] Ağ Bağdaştırıcıları ve MAC Adresi"
+echo "[1/4] Network Adapters & MAC Address"
 ip link show | grep -E "link/ether" | awk '{print "  " $2}'
-echo "(MAC adresinin orijinalinden farklı olup olmadığını kontrol et)"
+echo "(Verify if your MAC address differs from the original hardware MAC)"
 echo ""
 
-echo "[2/4] IPv6 Durumu (Kapalı Olmalı)"
+echo "[2/4] IPv6 Status (Should be Disabled)"
 IPV6_STATE=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
 if [ "$IPV6_STATE" -eq 1 ]; then
-    echo "  ✅ IPv6 Başarıyla Kapatılmış."
+    echo "  ✅ IPv6 successfully disabled."
 else
-    echo "  ❌ UYARI: IPv6 Halen Aktif Sızıntı Yapabilir!"
+    echo "  ❌ WARNING: IPv6 is still active and may cause leaks!"
 fi
 echo ""
 
-echo "[3/4] Sistem Saati ve Timezone (UTC Olmalı)"
+echo "[3/4] System Clock & Timezone (Should be UTC)"
 timedatectl | grep -E "Time zone|Local time"
 echo ""
 
-echo "[4/4] Tor Ağı Çıkış Düğümü (Exit Node) Kontrolü"
+echo "[4/4] Tor Network Exit Node Check"
 TOR_IP=$(curl -s --max-time 10 https://check.torproject.org/api/ip | grep -oP '"IP":"\K[^"]+')
 if [ -n "$TOR_IP" ]; then
-    echo "  ✅ Tor IP Adresiniz: $TOR_IP"
+    echo "  ✅ Your Tor Exit IP Address: $TOR_IP"
 else
-    echo "  ❌ UYARI: Tor Ağına Ulaşılamadı veya Sızıntı Var!"
+    echo "  ❌ WARNING: Tor Network unreachable or leaking!"
 fi
 echo "============================================="
-echo "Görsel doğrulama için Firefox açılıyor..."
-echo "Lütfen sekmelerdeki test sonuçlarını inceleyin."
+echo "Launching Firefox for visual verification..."
+echo "Please review the test results in the newly opened tabs."
 
-# Arka planda Firefox'u ilgili test siteleriyle başlat
+# Start Firefox in the background with validation sites
 firefox-esr \
     "https://check.torproject.org/" \
     "https://dnsleaktest.com/" \
@@ -44,4 +44,4 @@ firefox-esr \
     "https://browserleaks.com/javascript" \
     "https://amiunique.org/" > /dev/null 2>&1 &
 
-echo "İşlem tamamlandı. Tarayıcıyı kontrol edin."
+echo "Operation complete. Check your browser."
