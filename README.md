@@ -1,59 +1,59 @@
 # Amnesic Ghost Framework 👻
 
-Bu proje, USB üzerinden çalışan Kali Linux sistemlerinde tam anonimlik, operasyonel güvenlik (OpSec) ve şifreli veri izolasyonu sağlamak için geliştirilmiş **eğitim amaçlı** bir çerçevedir. 
+This project is an **educational framework** designed to provide complete anonymity, operational security (OpSec), and cryptographically isolated data storage for Kali Linux running via a live USB environment.
 
-> ⚠️ **Yasal Uyarı (Disclaimer):** Bu framework siber güvenlik araştırmacıları, sızma testi (penetration test) uzmanları ve mahremiyet savunucuları için deneysel amaçlarla hazırlanmıştır. Buradaki betikler hiçbir yasa dışı faaliyeti teşvik etmez. Oluşabilecek tüm sorumluluk kullanıcıya aittir.
+> ⚠️ **Disclaimer:** This framework is developed strictly for educational and experimental purposes, intended for cybersecurity researchers, penetration testers, and privacy advocates. The provided scripts do not encourage or endorse any illegal activities. All responsibility lies with the user.
 
-## 1. Neden Standart "Kalıcılık (Persistence)" Kullanmıyoruz?
-Normal `Live (persistence)` modu, USB'deki ayrılmış alanı işletim sistemine entegre eder. Bu modda çalışırken yapılan **her şey** (tarayıcı geçmişi, indirilen dosyalar, arka plan logları) kaydedilir. 
+## 1. Why Not Use Standard "Persistence"?
+The standard `Live (persistence)` mode integrates the allocated USB space with the operating system. While working in this mode, **everything** you do—browser history, downloaded files, background logs—is permanently recorded on the drive.
 
-Bizim amacımız ise işletim sisteminin her kapanışta **kendini tamamen sıfırlaması (Amnesic)**, sadece belirlediğimiz hassas görevlerin ve araçların kalıcı, kriptografik olarak izole edilmiş bir depoda (VeraCrypt Kasası) saklanmasıdır.
+Our goal is an **Amnesic** environment: the operating system completely resets and wipes itself upon every shutdown. Only specific sensitive tasks and tools are persistently stored within a cryptographically isolated, hidden vault (VeraCrypt).
 
-## 2. OpSec Level 99: Altın Kurallar
-Gizliliğinizi korurken dikkat etmeniz gereken 3 temel OpSec kuralı:
+## 2. OpSec Level 99: The Golden Rules
+To maintain true privacy, this framework relies on 3 core OpSec principles:
 
-- **Gölge (Burner) Hesap:** Sisteme giriş yaparken **asla** şahsi hesaplarınızı kullanmayın. Tor/VPN üzerinden açılmış (örn: kafeden alınmış sanal numarayla doğrulanmış) anonim bir "Gölge" hesap kullanın.
-- **Tam İzolasyon:** Anahtarlarınızı, şifrelerinizi ve hassas verilerinizi sadece USB'nizdeki şifreli VeraCrypt kasasında saklayın.
-- **Tor Yönlendirmesi:** Kasa içindeki hiçbir aracı veya tarayıcıyı, trafiğinizi Tor ağına (`anonsurf`) yönlendirmeden **asla** çalıştırmayın.
+- **Burner Accounts:** **Never** use your personal accounts (e.g., Gmail, personal phone-verified accounts) to log into any services. Always use anonymous "Burner" accounts registered over Tor/VPN (e.g., using virtual numbers).
+- **Absolute Isolation:** Store your API keys, passwords, and sensitive data **only** within the encrypted VeraCrypt vault on your USB drive. Never leave them in the live system's home directory.
+- **Strict Tor Routing:** **Never** launch any tools or browsers inside the vault without first routing your entire system traffic through the Tor network (`anonsurf`).
 
-## 3. Sistem Mimarisi ve Kullanım Adımları
+## 3. System Architecture & Workflow
 
-Bu mimaride dışarıdan bakan biri USB'de sadece Kali Linux ve VeraCrypt kurulum dosyası görür. Tüm gizlilik araçları (Tor, I2P, Anonsurf, Tarayıcı verileri) ve kişisel projeleriniz 256-bit şifreli kasanın içine kilitlenmiştir.
+To an external observer, the USB drive simply contains a standard Kali Linux installation and a VeraCrypt installer. All privacy tools (Tor, I2P, Anonsurf, Browser fingerprint mitigations) and personal scripts are locked inside a 256-bit encrypted vault.
 
-### ✅ Adım 1 — Dış Kurulum (VeraCrypt)
-Bilgisayarı Kali Live olarak başlattıktan sonra, **İnternete BAĞLANMADAN** terminali açın ve sadece VeraCrypt'i kuracak olan ilk scripti çalıştırın:
+### ✅ Step 1 — Offline Installation (VeraCrypt)
+After booting Kali Live, open a terminal **BEFORE connecting to the internet** and run the initial setup script to install VeraCrypt locally:
 ```bash
 sudo bash /run/media/kali/EFI_Boot/scripts/setup.sh
 ```
 
-### ⚠️ B Planı — Online Kurulum (Fallback)
-Eğer USB'deki çevrimdışı `.deb` paketleri bozulursa, **Minimum IP İfşası** prensibiyle çalışan `fallback-setup.sh` betiğini kullanın. Bu betik, gerçek IP'nizle sadece Tor'u kurar; geri kalan her şeyi (VeraCrypt dahil) Tor tüneli içinden anonim olarak indirir:
+### ⚠️ Plan B — Online Installation (Fallback)
+If the offline `.deb` packages on your USB become corrupted, use the `fallback-setup.sh` script. This script operates on a **Minimum IP Disclosure** principle: it installs only Tor using your real IP, and then securely downloads everything else (including VeraCrypt) anonymously through the Tor tunnel:
 ```bash
 sudo bash /run/media/kali/EFI_Boot/scripts/fallback-setup.sh
 ```
 
-### ✅ Adım 2 — Kasa Açılışı
-VeraCrypt arayüzünü açın:
-1. Boş bir Slot seçin.
-2. **Select File:** `/run/media/kali/EFI_Boot/swap_file.sys` (Kamuflaj kasa dosyası)
-3. **Mount** diyerek parolanızı girin.
+### ✅ Step 2 — Opening the Vault
+Open the VeraCrypt GUI:
+1. Select an empty slot.
+2. **Select File:** `/run/media/kali/EFI_Boot/swap_file.sys` (The camouflaged vault file).
+3. Click **Mount** and enter your password.
 
-### ✅ Adım 3 — Hayalet Moda Geçiş (Ghost Mode)
-Kasa açıldıktan sonra, kasanın içindeki tüm gizlilik araçlarını kuracak, MAC adresini değiştirecek, saati gizlice internetten UTC'ye senkronize edecek ve tarayıcıyı zırhlayacak ana scripti çalıştırın:
+### ✅ Step 3 — Entering Ghost Mode
+Once the vault is mounted, run the core script to deploy all privacy tools, spoof your MAC address, stealthily sync your timezone to UTC, and armor your browser:
 ```bash
 sudo bash /media/veracrypt1/scripts/ghost.sh
 ```
-> **Önemli:** Script çalışırken duraklayacak ve sizden Wi-Fi'ye bağlanmanızı isteyecektir. Bağlandıktan sonra ENTER'a basarsanız Tor (Anonsurf) otomatik başlayacak ve saat eşitlemesi yapılacaktır.
+> **Note:** The script will pause and prompt you to connect to Wi-Fi. Press ENTER after connecting. It will automatically initialize Tor (Anonsurf) and sync the system clock.
 
-### ✅ Adım 4 — Doğrulama (Inspector)
-Her şeyin kusursuz çalıştığından emin olmak için bağımsız denetim betiğini çalıştırın:
+### ✅ Step 4 — Verification (Inspector)
+To ensure everything is working flawlessly without leaks, run the independent inspection script:
 ```bash
 sudo bash /media/veracrypt1/scripts/opsec-check.sh
 ```
-Bu betik sistem durumunu (MAC, IPv6, UTC) terminalde doğrular ve ardından Firefox'u otomatik olarak IP, DNS Leak ve Browser Fingerprint test sekmeleriyle açar.
+This script verifies your system state (MAC, IPv6, UTC) in the terminal and automatically opens Firefox with IP, DNS Leak, and Browser Fingerprint testing tabs.
 
-### ✅ Adım 5 — Kapanış ve Yok Oluş
-İşiniz bittiğinde bilgisayarı kapatın (Shut down).
-- Kapanış anında RAM'deki tüm veriler silinir.
-- İşletim sisteminde girilen siteler veya bırakılan izler sonsuza dek kaybolur.
-- Geriye sadece USB diskinizdeki kırılması imkansız şifreli VeraCrypt kasası kalır.
+### ✅ Step 5 — Shutdown & Disappearance
+When your work is done, simply shut down the computer.
+- The moment the system powers off, all data in RAM is wiped.
+- Any websites visited or traces left in the operating system disappear forever.
+- Only your unbreakable, encrypted VeraCrypt vault remains on the USB drive.
