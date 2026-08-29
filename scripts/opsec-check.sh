@@ -36,8 +36,15 @@ echo "============================================="
 echo "Launching Firefox for visual verification..."
 echo "Please review the test results in the newly opened tabs."
 
-# Start Firefox in the background with validation sites
-firefox-esr \
+# Identify the correct non-root user (usually 'kali' in live USB)
+if [ -n "$SUDO_USER" ]; then
+    NORMAL_USER="$SUDO_USER"
+else
+    NORMAL_USER="kali"
+fi
+
+# Start Firefox as the normal user (running GUI apps as root fails)
+sudo -u "$NORMAL_USER" firefox-esr \
     "https://check.torproject.org/" \
     "https://dnsleaktest.com/" \
     "https://browserleaks.com/webrtc" \
