@@ -9,7 +9,7 @@ A privacy-focused Kali Linux Live environment designed to minimize persistent lo
 ## 🛠️ Tech Stack & Core Technologies
 - **Core OS & Automation:** Kali Linux (Debian), Bash Shell Scripting, `tmpfs` (RAM Disk)
 - **Cryptography:** VeraCrypt (AES-256, Hidden Volumes), Ext4/exFAT Filesystems
-- **Network Routing:** Tor Network, I2P, `iptables` (Transparent Proxying via Anonsurf)
+- **Network Routing:** Tor Network, `iptables` (Transparent Proxying via Anonsurf)
 - **Hardware/OpSec:** `macchanger`, IPv6/DNS Leak Prevention, UTC Time-Spoofing
 - **Application Security:** Mullvad Browser (Anti-Fingerprinting), X11/Wayland Display Auth (`XAUTHORITY`)
 
@@ -90,6 +90,7 @@ Before using this framework, you need to create the encrypted vault (`hidden_vau
 4. **Volume Location:** Navigate to your persistent USB partition and name the file `hidden_vault.hc`.
 5. **Volume Password:** Enter a strong, random password (20+ characters). Do NOT use keyfiles on a Live OS.
 6. **Format:** Move your mouse randomly to increase cryptographic strength, select `ext4` or `exFAT` (the framework runs from RAM so exFAT limitations are bypassed), and click Format.
+7. **Populate Decoy:** *Crucial Step:* After creation, fill the outer Decoy Volume with realistic, usable files (e.g., normal documents, family photos, or movies). An empty decoy volume is highly suspicious and breaks plausible deniability.
 
 **Method B: Command Line**
 ```bash
