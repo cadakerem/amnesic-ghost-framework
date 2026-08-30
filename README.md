@@ -51,7 +51,19 @@ This framework protects against specific threats but relies heavily on the user'
 
 ---
 
-## 3. Creating the Vault (Initial Setup)
+## 3. Prerequisites & Downloads
+Since security tools should never be distributed via third-party repositories, you must download the offline binaries directly from their official vendors before setting up your USB drive.
+
+1. **VeraCrypt (Linux Debian 12/13 - GUI):**
+   Download the `.deb` installer from the official site: [https://veracrypt.fr/en/Downloads.html](https://veracrypt.fr/en/Downloads.html)
+2. **Mullvad Browser (Linux x86_64):**
+   Download the `.tar.xz` archive from the official site: [https://mullvad.net/en/download/browser/linux](https://mullvad.net/en/download/browser/linux)
+3. **Kali Anonsurf (Source Code):**
+   Download or clone the Anonsurf repository from GitHub: [https://github.com/Und3rf10w/kali-anonsurf](https://github.com/Und3rf10w/kali-anonsurf)
+
+---
+
+## 4. Creating the Vault (Initial Setup)
 
 Before using this framework, you need to create the encrypted vault (`hidden_vault.hc`) where your tools will reside on the persistent section of your USB drive (e.g., `/run/media/kali/USB_DRIVE/`).
 
@@ -87,7 +99,7 @@ After creation, you must structure your files correctly.
 
 ---
 
-## 4. Operation Workflow
+## 5. Operation Workflow
 
 To an external observer, the USB drive simply contains a standard Kali Linux installation. 
 
