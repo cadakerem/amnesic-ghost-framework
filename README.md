@@ -2,7 +2,7 @@
 
 A privacy-focused Kali Linux Live environment designed to minimize persistent local artifacts, isolate sensitive data, and route network traffic securely through Tor.
 
-> ⚠️ **Disclaimer:** This framework is developed strictly for educational and experimental purposes, intended for cybersecurity researchers, penetration testers, and privacy advocates. The provided scripts do not encourage or endorse any illegal activities. All responsibility lies with the user.
+> ⚠️ **Disclaimer:** This project is provided strictly for lawful, educational, and defensive security purposes only. It is intended for cybersecurity researchers, penetration testers, and privacy advocates. The provided scripts do not encourage, endorse, or facilitate any illegal activities. The author assumes no liability and is not responsible for any misuse, damage, or legal consequences caused by the use of this framework. All responsibility lies entirely with the user.
 
 ---
 
