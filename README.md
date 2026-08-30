@@ -18,7 +18,7 @@ The base operating system is Kali Linux running in Live Mode.
 
 ### The Cryptographic Layer (VeraCrypt Vault)
 To store necessary tools and sensitive information persistently without compromising the amnesic nature of the OS, a hidden volume is utilized.
-- **Camouflage:** The vault is camouflaged (e.g., `hidden_vault.hc` or `swap_file.sys`) and placed in the unencrypted USB partition to avoid suspicion.
+- **Camouflage:** The vault is camouflaged (e.g., `hidden_vault.hc` or `system_cache.dat`) and placed in the unencrypted USB partition to avoid suspicion.
 - **Encryption:** 256-bit encryption ensures that even if the USB is lost, the data remains inaccessible.
 
 ### The Routing Layer (Anonsurf & Tor)
