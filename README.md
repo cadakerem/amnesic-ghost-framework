@@ -61,20 +61,26 @@ Since security tools should never be distributed via third-party repositories, y
 3. **Kali Anonsurf (Source Code):**
    Download or clone the Anonsurf repository from GitHub: [https://github.com/Und3rf10w/kali-anonsurf](https://github.com/Und3rf10w/kali-anonsurf)
 
+> [!IMPORTANT]
+> **Supply-Chain Verification:** Never blindly trust downloaded binaries. You must verify the PGP/GPG signatures and SHA256 checksums of VeraCrypt and Mullvad Browser before moving them to your USB drive. If the signatures do not match the official developer keys, the binaries may be compromised.
+
 ---
 
 ## 4. Creating the Vault (Initial Setup)
 
 Before using this framework, you need to create the encrypted vault (`hidden_vault.hc`) where your tools will reside on the persistent section of your USB drive (e.g., `/run/media/kali/USB_DRIVE/`).
 
+> [!CAUTION]
+> **Plausible Deniability (Standard vs. Hidden Volume):** A forensic analyst will easily identify a large, high-entropy file as a cryptographic container, regardless of its name (`system_cache.dat`). Naming it is merely superficial camouflage against casual observation. 
+> To survive rubber-hose cryptanalysis or forced password disclosure, you **must** use VeraCrypt's **Hidden Volume** feature. This involves creating a Decoy Volume (filled with mundane files like movies or school documents) and a Hidden Volume (where this framework's scripts and browsers reside) inside the same container. If coerced, you surrender the password to the Decoy Volume only.
+
 **Method A: Using VeraCrypt GUI (Recommended)**
 1. Launch VeraCrypt and click **Create Volume**.
 2. Select **Create an encrypted file container**.
-3. Select **Standard VeraCrypt volume** (or Hidden).
+3. Select **Hidden VeraCrypt volume** (crucial for Plausible Deniability).
 4. **Volume Location:** Navigate to your persistent USB partition and name the file `hidden_vault.hc`.
-5. **Volume Size:** Enter the desired size (e.g., 2 GB).
-6. **Volume Password:** Enter a strong, random password (20+ characters). Do NOT use keyfiles on a Live OS.
-7. **Format:** Move your mouse randomly to increase cryptographic strength, select `ext4` or `exFAT`, and click Format.
+5. **Volume Password:** Enter a strong, random password (20+ characters). Do NOT use keyfiles on a Live OS.
+6. **Format:** Move your mouse randomly to increase cryptographic strength, select `ext4` or `exFAT` (the framework runs from RAM so exFAT limitations are bypassed), and click Format.
 
 **Method B: Command Line**
 ```bash
@@ -122,7 +128,7 @@ sudo bash /run/media/kali/USB_DRIVE/scripts/fallback-setup.sh
 Open the VeraCrypt GUI, select the camouflaged vault file (`/run/media/kali/USB_DRIVE/hidden_vault.hc`), and click **Mount**.
 
 ### ✅ Step 3 — Entering Ghost Mode
-Once the vault is mounted, run the core script to deploy all privacy tools, spoof the MAC address, sync the timezone to UTC, and prepare the browser in RAM:
+Once the vault is mounted, run the core script. The script performs MAC spoofing **offline** before associating with any network, ensuring your real hardware MAC is never broadcasted. It then deploys all privacy tools and prepares the browser in RAM:
 ```bash
 sudo bash /media/veracrypt1/scripts/ghost.sh
 ```
@@ -138,6 +144,9 @@ This script verifies your system state (MAC, IPv6, UTC) locally and automaticall
 - `dnsleaktest.com`: Confirms DNS requests do not leak your ISP.
 - `browserleaks.com/webrtc`: Confirms WebRTC is disabled and not leaking local IP.
 - `amiunique.org`: Confirms the browser blends in with the Tor anonymity set.
+
+> [!CAUTION]
+> **Test Site Logging:** Keep in mind that third-party leak testing sites (`dnsleaktest`, `amiunique`, etc.) log your Tor exit IP and browser fingerprint. In an extreme paranoia threat model, visiting these sites before conducting sensitive operations provides correlation data to the exit node and the site operator. Use them for educational verification, but close the browser and restart the framework for real operations.
 
 ### ✅ Step 5 — Shutdown
 When your work is done, shut down the computer. The moment the system powers off, all data in RAM is wiped, leaving only the encrypted VeraCrypt vault on the USB drive.
