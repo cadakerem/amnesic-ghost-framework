@@ -26,9 +26,9 @@ The base operating system is Kali Linux running in Live Mode.
 - **Wipe on Power-Off:** The moment power is lost or the system shuts down, all operational artifacts are destroyed.
 
 ### The Cryptographic Layer (VeraCrypt Vault)
-To store necessary tools and sensitive information persistently without compromising the amnesic nature of the OS, a hidden volume is utilized.
-- **Camouflage:** The vault is camouflaged (e.g., `hidden_vault.hc` or `system_cache.dat`) and placed in the unencrypted USB partition to avoid suspicion.
-- **Encryption:** 256-bit encryption ensures that even if the USB is lost, the data remains inaccessible.
+To store necessary tools and sensitive information persistently without compromising the amnesic nature of the OS, an encrypted container is utilized.
+- **Camouflage:** The container file is superficially named (e.g., `system_cache.dat`) and placed in the unencrypted USB partition to avoid casual suspicion.
+- **Plausible Deniability:** To survive forced password disclosure (rubber-hose cryptanalysis), the framework mandates the use of VeraCrypt's true **Hidden Volume** feature (an inner volume nested inside a decoy outer volume).
 
 ### The Routing Layer (Anonsurf & Tor)
 Once the system is active, all traffic must be routed through the Tor network.
@@ -37,7 +37,7 @@ Once the system is active, all traffic must be routed through the Tor network.
 - **IPv6 Disabling:** IPv6 is disabled system-wide to prevent accidental leaks.
 
 ### The Fingerprint Layer (Hardware & Browser)
-- **MAC Spoofing:** `macchanger` alters the physical network interface's MAC address before connecting to any network.
+- **MAC Spoofing:** `macchanger` alters the physical network interface's MAC address strictly **offline**, before any network interface is brought up or associated with an access point.
 - **Timezone Alignment:** The system clock is synchronized to UTC using the Tor network to prevent timezone correlation.
 - **Browser Hardening:** `privacy.resistFingerprinting` is enabled in Mullvad Browser to normalize the browser footprint.
 
