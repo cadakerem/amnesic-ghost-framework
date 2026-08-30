@@ -1,5 +1,5 @@
 #!/bin/bash
-DEPO="/media/usb_drive"
+DEPO="/run/media/kali/USB_DRIVE"
 
 echo "[1/2] Installing VeraCrypt and dependencies (Offline)..."
 sudo dpkg -i "$DEPO"/libwx*.deb
