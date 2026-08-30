@@ -21,6 +21,22 @@ if [ ! -d "/tmp/mullvad-browser" ]; then
     sudo chown -R kali:kali /tmp/mullvad-browser
 fi
 
+# Create a convenient Desktop shortcut for the user
+if [ -d "/home/kali/Desktop" ]; then
+    cat << 'EOF' | sudo -u kali tee /home/kali/Desktop/Mullvad-Ghost.desktop > /dev/null
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Mullvad Browser (Ghost)
+Comment=RAM-based Secure Browser
+Exec=/tmp/mullvad-browser/Browser/start-mullvad-browser
+Icon=/tmp/mullvad-browser/Browser/browser/chrome/icons/default/default128.png
+Terminal=false
+Categories=Network;WebBrowser;Security;
+EOF
+    sudo chmod +x /home/kali/Desktop/Mullvad-Ghost.desktop
+fi
+
 echo ""
 echo "============================================="
 echo "   ⚠️ ATTENTION: WAITING FOR CONNECTION ⚠️"
