@@ -44,7 +44,7 @@ echo "============================================="
 echo "MAC address is spoofed and setup is complete."
 echo "Please connect to a WI-FI network now."
 echo ""
-read -p "Press ENTER after the connection is established..."
+read -r -p "Press ENTER after the connection is established..."
 
 echo ""
 echo "[5/6] Initializing Tor Tunnel (Anonsurf)..."
