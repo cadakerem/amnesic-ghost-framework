@@ -69,7 +69,21 @@ Before using this framework, you need to create the encrypted vault (`hidden_vau
 veracrypt -t -c --volume-type=normal "/run/media/kali/USB_DRIVE/hidden_vault.hc" --size=2G --encryption=aes --hash=sha-512 --filesystem=ext4 --pim=0 --keyfiles="" --random-source=/dev/urandom
 ```
 
-After creation, copy the `scripts/` folder (including `ghost.sh` and `opsec-check.sh`) into the mounted vault.
+After creation, you must structure your files correctly.
+
+**Directory Structure Requirements:**
+
+1. **On the unencrypted USB Partition** (`/run/media/kali/USB_DRIVE/`):
+   - `hidden_vault.hc` *(Your newly created vault)*
+   - `veracrypt-*.deb` and `libwx*.deb` *(Downloaded manually from VeraCrypt for offline installation)*
+   - `scripts/setup.sh`
+   - `scripts/fallback-setup.sh`
+
+2. **Inside the mounted VeraCrypt Vault** (`/media/veracrypt1/`):
+   - `scripts/ghost.sh`
+   - `scripts/opsec-check.sh`
+   - `repo/mullvad-browser-linux-x86_64-*.tar.xz` *(Downloaded manually from Mullvad)*
+   - `repo/kali-anonsurf/` *(Cloned from GitHub)*
 
 ---
 
