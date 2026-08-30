@@ -53,7 +53,7 @@ This framework protects against specific threats but relies heavily on the user'
 
 ## 3. Creating the Vault (Initial Setup)
 
-Before using this framework, you need to create the encrypted vault (`hidden_vault.hc`) where your tools will reside on the persistent section of your USB drive (e.g., `/run/media/kali/EFI_Boot/`).
+Before using this framework, you need to create the encrypted vault (`hidden_vault.hc`) where your tools will reside on the persistent section of your USB drive (e.g., `/run/media/kali/USB_DRIVE/`).
 
 **Method A: Using VeraCrypt GUI (Recommended)**
 1. Launch VeraCrypt and click **Create Volume**.
@@ -66,7 +66,7 @@ Before using this framework, you need to create the encrypted vault (`hidden_vau
 
 **Method B: Command Line**
 ```bash
-veracrypt -t -c --volume-type=normal "/run/media/kali/EFI_Boot/swap_file.sys" --size=2G --encryption=aes --hash=sha-512 --filesystem=ext4 --pim=0 --keyfiles="" --random-source=/dev/urandom
+veracrypt -t -c --volume-type=normal "/run/media/kali/USB_DRIVE/hidden_vault.hc" --size=2G --encryption=aes --hash=sha-512 --filesystem=ext4 --pim=0 --keyfiles="" --random-source=/dev/urandom
 ```
 
 After creation, copy the `scripts/` folder (including `ghost.sh` and `opsec-check.sh`) into the mounted vault.
@@ -80,7 +80,7 @@ To an external observer, the USB drive simply contains a standard Kali Linux ins
 ### ✅ Step 1 — Offline Installation (VeraCrypt)
 After booting Kali Live, open a terminal **BEFORE connecting to the internet** and run the initial setup script to install VeraCrypt locally:
 ```bash
-sudo bash /run/media/kali/EFI_Boot/scripts/setup.sh
+sudo bash /run/media/kali/USB_DRIVE/scripts/setup.sh
 ```
 
 ### ⚠️ Plan B — Online Installation (Fallback)
@@ -89,11 +89,11 @@ If the offline `.deb` packages on your USB become corrupted or lost, use the `fa
 - It immediately starts the Tor tunnel.
 - It then securely installs the sensitive packages (like VeraCrypt) and downloads Mullvad Browser entirely through Tor without your real IP address pinging those servers.
 ```bash
-sudo bash /run/media/kali/EFI_Boot/scripts/fallback-setup.sh
+sudo bash /run/media/kali/USB_DRIVE/scripts/fallback-setup.sh
 ```
 
 ### ✅ Step 2 — Opening the Vault
-Open the VeraCrypt GUI, select the camouflaged vault file (`/run/media/kali/EFI_Boot/swap_file.sys`), and click **Mount**.
+Open the VeraCrypt GUI, select the camouflaged vault file (`/run/media/kali/USB_DRIVE/hidden_vault.hc`), and click **Mount**.
 
 ### ✅ Step 3 — Entering Ghost Mode
 Once the vault is mounted, run the core script to deploy all privacy tools, spoof the MAC address, sync the timezone to UTC, and prepare the browser in RAM:

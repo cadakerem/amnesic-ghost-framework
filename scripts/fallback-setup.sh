@@ -18,7 +18,7 @@ echo "[3/4] Initializing Tor Tunnel (You are now anonymous)..."
 sudo anonsurf start
 
 echo "[4/5] Installing VeraCrypt and dependencies via Tor Tunnel..."
-DEPO="/run/media/kali/EFI_Boot"
+DEPO="/run/media/kali/USB_DRIVE"
 if [ -d "$DEPO" ]; then
     sudo dpkg -i "$DEPO"/libwx*.deb 2>/dev/null
     sudo dpkg -i "$DEPO"/veracrypt*.deb 2>/dev/null
