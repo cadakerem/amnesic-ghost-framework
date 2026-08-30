@@ -6,6 +6,15 @@ A privacy-focused Kali Linux Live environment designed to minimize persistent lo
 
 ---
 
+## 🛠️ Tech Stack & Core Technologies
+- **Core OS & Automation:** Kali Linux (Debian), Bash Shell Scripting, `tmpfs` (RAM Disk)
+- **Cryptography:** VeraCrypt (AES-256, Hidden Volumes), Ext4/exFAT Filesystems
+- **Network Routing:** Tor Network, I2P, `iptables` (Transparent Proxying via Anonsurf)
+- **Hardware/OpSec:** `macchanger`, IPv6/DNS Leak Prevention, UTC Time-Spoofing
+- **Application Security:** Mullvad Browser (Anti-Fingerprinting), X11/Wayland Display Auth (`XAUTHORITY`)
+
+---
+
 ## 1. System Architecture
 
 The Amnesic Ghost Framework is designed with a layered approach to ensure maximum privacy and data isolation.
