@@ -1,5 +1,5 @@
 #!/bin/bash
-REPO="/media/veracrypt_vault/repo"
+REPO="/media/veracrypt1/repo"
 
 echo "[1/6] Spoofing MAC Address randomly..."
 sudo ip link set wlan0 down 2>/dev/null
