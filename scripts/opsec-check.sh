@@ -1,54 +1,52 @@
 #!/bin/bash
 
 echo "============================================="
-echo "   🛡️ OPSEC INSPECTION CENTER (VALIDATOR) 🛡️"
+echo "   🛡️ OPSEC INSPECTOR (VERIFICATION) 🛡️"
 echo "============================================="
-echo "This script verifies the privacy settings"
-echo "configured by ghost.sh and launches test sites."
+echo "This script verifies the privacy constraints"
+echo "and launches test sites for visual confirmation."
 echo "---------------------------------------------"
 
-echo "[1/4] Network Adapters & MAC Address"
+echo "[1/4] Network Interfaces and MAC Address"
 ip link show | grep -E "link/ether" | awk '{print "  " $2}'
-echo "(Verify if your MAC address differs from the original hardware MAC)"
+echo "(Ensure this MAC differs from your hardware MAC)"
 echo ""
 
-echo "[2/4] IPv6 Status (Should be Disabled)"
+echo "[2/4] IPv6 Status (Must be disabled)"
 IPV6_STATE=$(sysctl -n net.ipv6.conf.all.disable_ipv6)
 if [ "$IPV6_STATE" -eq 1 ]; then
-    echo "  ✅ IPv6 successfully disabled."
+    echo "  ✅ IPv6 is successfully disabled."
 else
-    echo "  ❌ WARNING: IPv6 is still active and may cause leaks!"
+    echo "  ❌ WARNING: IPv6 is still active! Potential leak."
 fi
 echo ""
 
-echo "[3/4] System Clock & Timezone (Should be UTC)"
+echo "[3/4] System Clock and Timezone (Must be UTC)"
 timedatectl | grep -E "Time zone|Local time"
 echo ""
 
-echo "[4/4] Tor Network Exit Node Check"
+echo "[4/4] Tor Network Exit Node Verification"
 TOR_IP=$(curl -s --max-time 10 https://check.torproject.org/api/ip | grep -oP '"IP":"\K[^"]+')
 if [ -n "$TOR_IP" ]; then
-    echo "  ✅ Your Tor Exit IP Address: $TOR_IP"
+    echo "  ✅ Active Tor IP Address: $TOR_IP"
 else
-    echo "  ❌ WARNING: Tor Network unreachable or leaking!"
+    echo "  ❌ WARNING: Unreachable Tor Network or Leaking!"
 fi
 echo "============================================="
-echo "Launching Firefox for visual verification..."
+echo "Launching Mullvad Browser from RAM for visual verification..."
 echo "Please review the test results in the newly opened tabs."
 
-# Identify the correct non-root user (usually 'kali' in live USB)
 if [ -n "$SUDO_USER" ]; then
     NORMAL_USER="$SUDO_USER"
 else
     NORMAL_USER="kali"
 fi
 
-# Start Firefox as the normal user (running GUI apps as root fails)
-sudo -u "$NORMAL_USER" firefox-esr \
+sudo -u "$NORMAL_USER" env DISPLAY="${DISPLAY:-:0}" XAUTHORITY="${XAUTHORITY:-/home/$NORMAL_USER/.Xauthority}" /tmp/mullvad-browser/Browser/start-mullvad-browser \
     "https://check.torproject.org/" \
     "https://dnsleaktest.com/" \
     "https://browserleaks.com/webrtc" \
     "https://browserleaks.com/javascript" \
     "https://amiunique.org/" > /dev/null 2>&1 &
 
-echo "Operation complete. Check your browser."
+echo "Verification complete. Check your browser."

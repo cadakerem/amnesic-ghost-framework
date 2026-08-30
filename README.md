@@ -30,7 +30,7 @@ Once the system is active, all traffic must be routed through the Tor network.
 ### The Fingerprint Layer (Hardware & Browser)
 - **MAC Spoofing:** `macchanger` alters the physical network interface's MAC address before connecting to any network.
 - **Timezone Alignment:** The system clock is synchronized to UTC using the Tor network to prevent timezone correlation.
-- **Browser Hardening:** `privacy.resistFingerprinting` is enabled in Firefox ESR to normalize the browser footprint.
+- **Browser Hardening:** `privacy.resistFingerprinting` is enabled in Mullvad Browser to normalize the browser footprint.
 
 ---
 
@@ -87,7 +87,7 @@ sudo bash /media/usb_drive/scripts/setup.sh
 If the offline `.deb` packages on your USB become corrupted or lost, use the `fallback-setup.sh` script. This script operates on a **Minimum IP Disclosure** principle.
 - It briefly uses your real IP address *only* to run `apt update` and install the base Tor dependencies.
 - It immediately starts the Tor tunnel.
-- It then securely installs the sensitive packages (like VeraCrypt) through Tor without your real IP address pinging those servers.
+- It then securely installs the sensitive packages (like VeraCrypt) and downloads Mullvad Browser entirely through Tor without your real IP address pinging those servers.
 ```bash
 sudo bash /media/usb_drive/scripts/fallback-setup.sh
 ```
@@ -96,7 +96,7 @@ sudo bash /media/usb_drive/scripts/fallback-setup.sh
 Open the VeraCrypt GUI, select the camouflaged vault file (`/media/usb_drive/hidden_vault.hc`), and click **Mount**.
 
 ### ✅ Step 3 — Entering Ghost Mode
-Once the vault is mounted, run the core script to deploy all privacy tools, spoof the MAC address, sync the timezone to UTC, and armor the browser:
+Once the vault is mounted, run the core script to deploy all privacy tools, spoof the MAC address, sync the timezone to UTC, and prepare the browser in RAM:
 ```bash
 sudo bash /media/veracrypt_vault/scripts/ghost.sh
 ```
@@ -107,11 +107,11 @@ To ensure the traffic is routed correctly, run the independent inspection script
 ```bash
 sudo bash /media/veracrypt_vault/scripts/opsec-check.sh
 ```
-This script verifies your system state (MAC, IPv6, UTC) locally and automatically opens Firefox with the following testing tabs to visually confirm the lack of leaks:
+This script verifies your system state (MAC, IPv6, UTC) locally and automatically opens Mullvad Browser directly from volatile RAM with the following testing tabs to visually confirm the lack of leaks:
 - `check.torproject.org`: Confirms this browser is using Tor.
 - `dnsleaktest.com`: Confirms DNS requests do not leak your ISP.
 - `browserleaks.com/webrtc`: Confirms WebRTC is disabled and not leaking local IP.
-- `amiunique.org`: Confirms the browser blends in with generic Tor bundles (`privacy.resistFingerprinting = true`).
+- `amiunique.org`: Confirms the browser blends in with the Tor anonymity set.
 
 ### ✅ Step 5 — Shutdown
 When your work is done, shut down the computer. The moment the system powers off, all data in RAM is wiped, leaving only the encrypted VeraCrypt vault on the USB drive.

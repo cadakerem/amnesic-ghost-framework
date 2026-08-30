@@ -1,31 +1,36 @@
 #!/bin/bash
 echo "============================================="
-echo "   ⚠️ PLAN B (ONLINE INSTALLATION) STARTING ⚠️"
+echo "   ⚠️ PLAN B (ONLINE INSTALLATION) ⚠️"
 echo "============================================="
-echo "This script is used to perform a minimal-exposure"
-echo "online installation in case the offline .deb"
-echo "packages on the USB are corrupted."
+echo "This script is used when offline deb packages"
+echo "are corrupted. It rebuilds the environment"
+echo "via minimum IP disclosure."
 
-echo "[1/4] Fetching Anonsurf dependencies with real IP..."
+echo "[1/4] Downloading Anonsurf dependencies via Clear-Net..."
 sudo apt update
 sudo apt install -y tor secure-delete i2p
 
-echo "[2/4] Downloading and installing Anonsurf..."
+echo "[2/4] Cloning and installing Anonsurf..."
 git clone https://github.com/Und3rf10w/kali-anonsurf.git /tmp/kali-anonsurf
 cd /tmp/kali-anonsurf && sudo bash installer.sh
 
-echo "[3/4] Starting Tor Tunnel (You are now anonymous)..."
+echo "[3/4] Initializing Tor Tunnel (You are now anonymous)..."
 sudo anonsurf start
 
-echo "[4/4] Installing VeraCrypt and dependencies via Tor Tunnel..."
-# Assuming user's veracrypt deb files are inside EFI_Boot
-# If they are missing, they can be wget'ed while the Tor tunnel is active.
+echo "[4/5] Installing VeraCrypt and dependencies via Tor Tunnel..."
 DEPO="/media/usb_drive"
 if [ -d "$DEPO" ]; then
     sudo dpkg -i "$DEPO"/libwx*.deb 2>/dev/null
     sudo dpkg -i "$DEPO"/veracrypt*.deb 2>/dev/null
     sudo apt --fix-broken install -y
-    echo "✅ Installation successfully completed through the Tor tunnel!"
+    echo "  ✅ VeraCrypt installation complete!"
 else
-    echo "❌ ERROR: USB repository path ($DEPO) could not be found."
+    echo "  ❌ ERROR: USB path ($DEPO) not found. Manual install required."
 fi
+
+echo ""
+echo "[5/5] Downloading Mullvad Browser via Tor (100% Anonymous)..."
+MULLVAD_URL="https://cdn.mullvad.net/browser/15.0.20/mullvad-browser-linux-x86_64-15.0.20.tar.xz"
+curl -L "$MULLVAD_URL" -o /tmp/mullvad-browser.tar.xz
+echo "✅ Setup Complete! Mullvad Browser downloaded to '/tmp/mullvad-browser.tar.xz'."
+echo "Extract this archive into your new encrypted vault."
