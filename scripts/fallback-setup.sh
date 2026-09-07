@@ -22,8 +22,15 @@ sudo anonsurf start
 # Fail-safe Tor check
 echo "[ TEST ] Verifying Tor Connectivity before downloading sensitive packages..."
 TOR_RESP=$(curl -s --max-time 10 https://check.torproject.org/api/ip || true)
-if ! echo "$TOR_RESP" | grep -q 'IsTor":true'; then
-    echo "? CRITICAL ERROR: Tor verification failed! Aborting."
+if [ -z "$TOR_RESP" ]; then
+    echo "? CRITICAL ERROR: Unreachable Tor Network! (No Internet or Tor is blocked)"
+    echo "Aborting."
+    sudo anonsurf stop > /dev/null 2>&1 || true
+    exit 1
+elif ! echo "$TOR_RESP" | grep -q 'IsTor":true'; then
+    echo "? CRITICAL LEAK: Traffic is NOT routed through Tor!"
+    echo "Aborting to prevent real IP exposure."
+    sudo anonsurf stop > /dev/null 2>&1 || true
     exit 1
 fi
 

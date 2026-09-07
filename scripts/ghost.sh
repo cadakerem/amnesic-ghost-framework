@@ -27,18 +27,22 @@ fi
 sudo ip link set "$IFACE" up
 echo "? MAC spoofing successful."
 
-echo "[2/6] Disabling IPv6 and syncing Timezone to UTC..."
+echo "[2/6] Disabling IPv6 and Setting local Timezone to UTC..."
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 >> "$LOG_FILE" 2>&1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 >> "$LOG_FILE" 2>&1
 sudo timedatectl set-timezone UTC
 
-echo "[3/6] Installing all privacy packages (Logs in $LOG_FILE)..."
+echo "[3/6] Installing all privacy packages OFFLINE (Logs in $LOG_FILE)..."
+# These steps are executed completely offline before any Wi-Fi association.
+# Kali Linux ISO comes with 'tor' pre-installed. We only install our custom .deb tools.
 if ! sudo dpkg -i "$REPO"/*.deb >> "$LOG_FILE" 2>&1; then
     echo "? ERROR: Failed to install privacy packages (.deb)."
     echo "Check $LOG_FILE for details."
     exit 1
 fi
 
+# kali-anonsurf installer simply copies bash scripts and iptables rules. 
+# It does not need internet if 'tor' is already pre-installed in the Kali OS.
 if ! (cd "$REPO/kali-anonsurf" && sudo bash installer.sh >> "$LOG_FILE" 2>&1); then
     echo "? ERROR: Failed to install Anonsurf."
     echo "Check $LOG_FILE for details."
@@ -51,7 +55,6 @@ if [ ! -d "/tmp/mullvad-browser" ]; then
     sudo chown -R "$REAL_USER":"$REAL_USER" /tmp/mullvad-browser
 fi
 
-# Create a convenient Desktop shortcut for the user
 if [ -d "/home/$REAL_USER/Desktop" ]; then
     cat << DESKTOP_EOF | sudo -u "$REAL_USER" tee /home/$REAL_USER/Desktop/Mullvad-Ghost.desktop > /dev/null
 [Desktop Entry]
@@ -71,8 +74,8 @@ echo ""
 echo "============================================="
 echo "   ?? ATTENTION: WAITING FOR CONNECTION ??"
 echo "============================================="
-echo "MAC address is spoofed and setup is complete."
-echo "Please connect to a WI-FI network now."
+echo "MAC address is spoofed and offline setup is complete."
+echo "Please connect to a WI-FI network now to continue."
 echo ""
 read -r -p "Press ENTER after the connection is established..."
 
@@ -85,32 +88,44 @@ if ! sudo anonsurf start >> "$LOG_FILE" 2>&1; then
 fi
 
 echo ""
-echo "[6/6] Syncing Hardware Clock via Tor Network..."
-REAL_TIME=$(curl -sI --max-time 15 https://check.torproject.org | grep -i '^Date:' | sed 's/^[Dd]ate: //g' | tr -d '')
-if [ -n "$REAL_TIME" ]; then
-    sudo date -s "$REAL_TIME" > /dev/null
-    echo "--> System clock successfully synced to UTC!"
-else
-    echo "--> ? Warning: Could not fetch time via Tor. Tor connection might be dead."
-    echo "Aborting."
-    sudo anonsurf stop >> "$LOG_FILE" 2>&1
-    exit 1
-fi
-
-echo ""
 echo "[ TEST ] Verifying Tor Connectivity..."
 TOR_RESP=$(curl -s --max-time 10 https://check.torproject.org/api/ip || true)
-if echo "$TOR_RESP" | grep -q 'IsTor":true'; then
+
+if [ -z "$TOR_RESP" ]; then
+    echo "? CRITICAL ERROR: Unreachable Tor Network! (No Internet or Tor is blocked by ISP)"
+    echo "Aborting Ghost Mode. You are NOT anonymous."
+    if ! sudo anonsurf stop >> "$LOG_FILE" 2>&1; then
+        echo "?? WARNING: 'anonsurf stop' also failed! Check $LOG_FILE."
+    fi
+    exit 1
+elif echo "$TOR_RESP" | grep -q 'IsTor":true'; then
     TOR_IP=$(echo "$TOR_RESP" | grep -oP '"IP":"\K[^"]+')
     echo "? Success! Traffic is routed via Tor (IP: $TOR_IP)."
 else
-    echo "? CRITICAL ERROR: Tor verification failed!"
-    echo "Either there is no internet connection, or traffic is leaking."
-    sudo anonsurf stop >> "$LOG_FILE" 2>&1 || true
+    echo "? CRITICAL LEAK: Traffic is NOT routed through Tor!"
+    echo "Aborting Ghost Mode to prevent real IP exposure."
+    if ! sudo anonsurf stop >> "$LOG_FILE" 2>&1; then
+        echo "?? WARNING: 'anonsurf stop' also failed! Check $LOG_FILE."
+    fi
     exit 1
 fi
 
 echo ""
+echo "[6/6] Syncing Hardware Clock via Tor Network..."
+# We fetch time ONLY via Tor to prevent Timezone/Locale Correlation.
+REAL_TIME=$(curl -sI --max-time 15 https://check.torproject.org | grep -i '^Date:' | sed 's/^[Dd]ate: //g' | tr -d '')
+if [ -n "$REAL_TIME" ]; then
+    sudo date -s "$REAL_TIME" > /dev/null
+    echo "--> System clock successfully synced to UTC via Tor!"
+else
+    echo "--> ? Warning: Could not fetch HTTP Date via Tor."
+    echo "Hardware RTC time might leak your local timezone. Aborting."
+    if ! sudo anonsurf stop >> "$LOG_FILE" 2>&1; then
+        echo "?? WARNING: 'anonsurf stop' also failed! Check $LOG_FILE."
+    fi
+    exit 1
+fi
+
 echo ""
 echo "=== ?? GHOST MODE ACTIVE ?? ==="
 echo "Your browser is ready in RAM. It will leave no trace upon shutdown."

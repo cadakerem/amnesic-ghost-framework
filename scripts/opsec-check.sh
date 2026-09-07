@@ -31,9 +31,7 @@ if [ -z "$TOR_RESP" ]; then
     echo "  ? CRITICAL ERROR: Unreachable Tor Network! (No Internet or Tor is blocked)"
     echo "  Aborting browser launch to prevent clear-net leaks."
     exit 1
-fi
-
-if echo "$TOR_RESP" | grep -q 'IsTor":true'; then
+elif echo "$TOR_RESP" | grep -q 'IsTor":true'; then
     TOR_IP=$(echo "$TOR_RESP" | grep -oP '"IP":"\K[^"]+')
     echo "  ? Active Tor IP Address: $TOR_IP"
 else
