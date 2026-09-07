@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 source "$(dirname "$0")/lib/verify-tor.sh"
+LOG_FILE="/var/log/ghost-fallback.log"
+sudo touch "$LOG_FILE"
+sudo chmod 666 "$LOG_FILE"
 
 echo "============================================="
 echo "   ?? PLAN B (ONLINE INSTALLATION) ??"
@@ -18,7 +21,7 @@ echo "[3/4] Initializing Tor Tunnel (You are now anonymous)..."
 sudo anonsurf start
 
 echo "[ TEST ] Verifying Tor Connectivity before downloading sensitive packages..."
-verify_tor_connectivity
+verify_tor_connectivity "$LOG_FILE"
 
 echo "[4/5] Installing VeraCrypt and dependencies via Tor Tunnel..."
 DEPO="/run/media/kali/USB_DRIVE"

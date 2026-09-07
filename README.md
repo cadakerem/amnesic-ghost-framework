@@ -57,6 +57,7 @@ This framework protects against specific threats but relies heavily on the user'
 1. **Compromised Host Hardware:** Hardware keyloggers, compromised firmware (Intel ME, BIOS), or screen-capturing implants.
 2. **OpSec Failures:** Logging into personal accounts (e.g., personal email, social media) while using this framework will instantly deanonymize the session.
 3. **Advanced Global Adversaries:** Entities capable of monitoring a large percentage of the Tor network nodes.
+4. **Single-Source Time Sync:** The system synchronizes its hardware clock by fetching the HTTP Date header strictly from `check.torproject.org` over Tor. It does not use cross-referenced multi-source time synchronization (like Tails' `sdwdate`). If this endpoint is compromised, spoofed, or undergoing an MITM attack, the time synchronization could be manipulated.
 
 ---
 

@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 source "$(dirname "$0")/lib/verify-tor.sh"
+LOG_FILE="/var/log/ghost-opsec.log"
+sudo touch "$LOG_FILE"
+sudo chmod 666 "$LOG_FILE"
 
 echo "============================================="
 echo "   ??? OPSEC INSPECTOR (VERIFICATION) ???"
@@ -26,7 +29,7 @@ timedatectl | grep -E "Time zone|Local time"
 echo ""
 
 echo "[4/4] Tor Network Exit Node Verification"
-verify_tor_connectivity
+verify_tor_connectivity "$LOG_FILE"
 
 echo "============================================="
 echo "All OpSec constraints verified. Launching Mullvad Browser from RAM..."
