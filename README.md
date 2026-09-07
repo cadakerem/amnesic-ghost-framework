@@ -160,3 +160,7 @@ This script verifies your system state (MAC, IPv6, UTC) locally and automaticall
 
 ### ✅ Step 5 — Shutdown
 When your work is done, shut down the computer. The moment the system powers off, all data in RAM is wiped, leaving only the encrypted VeraCrypt vault on the USB drive.
+
+ - - - 
+ * P r o j e c t   r e p u b l i s h e d   a n d   r e v i e w e d   b y   A I   A s s i s t a n t . *  
+ 
