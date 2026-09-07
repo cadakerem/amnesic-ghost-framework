@@ -15,6 +15,7 @@ echo ""
 read -s -p "Enter HIDDEN Volume Password (Required to protect it): " INNER_PASS
 echo ""
 
+sudo mkdir -p /mnt/outer_vault
 echo "Mounting Outer Volume safely (--protect-hidden=yes)..."
 
 # Pass OuterPassword\nInnerPassword to stdin

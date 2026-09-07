@@ -3,3 +3,6 @@
 *.tar.xz
 *.zip
 *.tar.gz
+
+!scripts/lib/
+!scripts/lib/**
