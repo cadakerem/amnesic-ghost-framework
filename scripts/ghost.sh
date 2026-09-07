@@ -1,10 +1,24 @@
 #!/bin/bash
-REPO="/media/veracrypt1/repo"
+set -e
 
-echo "[1/6] Spoofing MAC Address randomly..."
-sudo ip link set wlan0 down 2>/dev/null
-sudo macchanger -r wlan0 2>/dev/null
-sudo ip link set wlan0 up 2>/dev/null
+REPO="/media/veracrypt1/repo"
+IFACE=${1:-"wlan0"}
+
+echo "[1/6] Spoofing MAC Address randomly on $IFACE..."
+if ! ip link show "$IFACE" > /dev/null 2>&1; then
+    echo "❌ ERROR: Network interface '$IFACE' not found."
+    echo "Pass your interface as an argument: sudo bash ghost.sh eth0"
+    exit 1
+fi
+
+sudo ip link set "$IFACE" down
+if ! sudo macchanger -r "$IFACE"; then
+    echo "❌ CRITICAL ERROR: macchanger failed to spoof MAC address!"
+    echo "Aborting Ghost Mode immediately to prevent physical hardware tracking."
+    exit 1
+fi
+sudo ip link set "$IFACE" up
+echo "✅ MAC spoofing successful."
 
 echo "[2/6] Disabling IPv6 and syncing Timezone to UTC..."
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null
