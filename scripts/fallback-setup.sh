@@ -1,12 +1,10 @@
 #!/bin/bash
 set -e
+source "$(dirname "$0")/lib/verify-tor.sh"
 
 echo "============================================="
 echo "   ?? PLAN B (ONLINE INSTALLATION) ??"
 echo "============================================="
-echo "This script is used when offline deb packages"
-echo "are corrupted. It rebuilds the environment"
-echo "via minimum IP disclosure."
 
 echo "[1/4] Downloading Anonsurf dependencies via Clear-Net..."
 sudo apt update
@@ -19,20 +17,8 @@ cd /tmp/kali-anonsurf && sudo bash installer.sh
 echo "[3/4] Initializing Tor Tunnel (You are now anonymous)..."
 sudo anonsurf start
 
-# Fail-safe Tor check
 echo "[ TEST ] Verifying Tor Connectivity before downloading sensitive packages..."
-TOR_RESP=$(curl -s --max-time 10 https://check.torproject.org/api/ip || true)
-if [ -z "$TOR_RESP" ]; then
-    echo "? CRITICAL ERROR: Unreachable Tor Network! (No Internet or Tor is blocked)"
-    echo "Aborting."
-    sudo anonsurf stop > /dev/null 2>&1 || true
-    exit 1
-elif ! echo "$TOR_RESP" | grep -q 'IsTor":true'; then
-    echo "? CRITICAL LEAK: Traffic is NOT routed through Tor!"
-    echo "Aborting to prevent real IP exposure."
-    sudo anonsurf stop > /dev/null 2>&1 || true
-    exit 1
-fi
+verify_tor_connectivity
 
 echo "[4/5] Installing VeraCrypt and dependencies via Tor Tunnel..."
 DEPO="/run/media/kali/USB_DRIVE"
@@ -50,4 +36,3 @@ echo "[5/5] Downloading Mullvad Browser via Tor (100% Anonymous)..."
 MULLVAD_URL="https://cdn.mullvad.net/browser/15.0.20/mullvad-browser-linux-x86_64-15.0.20.tar.xz"
 curl -L "$MULLVAD_URL" -o /tmp/mullvad-browser.tar.xz
 echo "? Setup Complete! Mullvad Browser downloaded to '/tmp/mullvad-browser.tar.xz'."
-echo "Extract this archive into your new encrypted vault."
