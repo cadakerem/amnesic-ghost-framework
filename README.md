@@ -78,41 +78,46 @@ Since security tools should never be distributed via third-party repositories, y
 
 ## 4. Creating the Vault (Initial Setup)
 
-Before using this framework, you need to create the encrypted vault (`hidden_vault.hc`) where your tools will reside on the persistent section of your USB drive (e.g., `/run/media/kali/USB_DRIVE/`).
+To preserve strict **Plausible Deniability**, you must NEVER run vault creation scripts from the unencrypted partition of the USB drive, nor should the USB drive contain scripts with words like "hidden" or "vault" in plain sight.
+
+For this reason, we provide a standalone `scripts/host-prep/` directory. **You must run these scripts on a secure, trusted host machine BEFORE deploying to the USB drive.**
 
 > [!CAUTION]
-> **Plausible Deniability (Standard vs. Hidden Volume):** A forensic analyst will easily identify a large, high-entropy file as a cryptographic container, regardless of its name (`system_cache.dat`). Naming it is merely superficial camouflage against casual observation. 
-> To survive rubber-hose cryptanalysis or forced password disclosure, you **must** use VeraCrypt's **Hidden Volume** feature. This involves creating a Decoy Volume (filled with mundane files like movies or school documents) and a Hidden Volume (where this framework's scripts and browsers reside) inside the same container. If coerced, you surrender the password to the Decoy Volume only.
+> **Plausible Deniability (Rubber-Hose Cryptanalysis):** A forensic analyst will easily identify a large, high-entropy file as a cryptographic container, regardless of its superficial name (e.g., `system_cache.dat`). 
+> To survive forced password disclosure, you **must** use VeraCrypt's **Hidden Volume** feature. If coerced, you surrender the password to the Outer Volume only.
 
-**Method A: Using VeraCrypt GUI (Recommended)**
-1. Launch VeraCrypt and click **Create Volume**.
-2. Select **Create an encrypted file container**.
-3. Select **Hidden VeraCrypt volume** (crucial for Plausible Deniability).
-4. **Volume Location:** Navigate to your persistent USB partition and name the file `hidden_vault.hc`.
-5. **Volume Password:** Enter a strong, random password (20+ characters). Do NOT use keyfiles on a Live OS.
-6. **Format:** Move your mouse randomly to increase cryptographic strength, select `ext4` or `exFAT` (the framework runs from RAM so exFAT limitations are bypassed), and click Format.
-7. **Populate Decoy:** *Crucial Step:* After creation, fill the outer Decoy Volume with realistic, usable files (e.g., normal documents, family photos, or movies). An empty decoy volume is highly suspicious and breaks plausible deniability.
-
-**Method B: Command Line**
+**Step A: Create the Vault on a Trusted Host**
+Run the automated creation script from your trusted host machine:
 ```bash
-veracrypt -t -c --volume-type=normal "/run/media/kali/USB_DRIVE/hidden_vault.hc" --size=2G --encryption=aes --hash=sha-512 --filesystem=ext4 --pim=0 --keyfiles="" --random-source=/dev/urandom
+bash scripts/host-prep/create-vault.sh
 ```
+- It will prompt securely for the outer and inner passwords (using `stdin` to prevent bash history leaks).
+- It will enforce the creation of the Hidden Volume within the Outer Volume.
 
-After creation, you must structure your files correctly.
+**Step B: Organically Populate the Decoy (Outer Volume)**
+You MUST populate the Outer Volume with real, boring files over a period of time. Do NOT use automation scripts to generate "dummy data," as forensic analysts can easily detect uniform timestamps, fake entropy, and lack of organic file accumulation. 
+Whenever you need to mount the Outer Volume to add files, ALWAYS use:
+```bash
+bash scripts/host-prep/mount-outer.sh
+```
+This helper script explicitly mounts it with `--protect-hidden=yes`. Without this flag, writing to the Outer Volume will physically overwrite and destroy your Ghost Framework (Hidden Volume).
 
-**Directory Structure Requirements:**
+**Step C: USB Directory Structure Requirements**
+Once generated, copy the container to your USB. The unencrypted partition must look generic.
 
 1. **On the unencrypted USB Partition** (`/run/media/kali/USB_DRIVE/`):
-   - `hidden_vault.hc` *(Your newly created vault)*
-   - `veracrypt-*.deb` and `libwx*.deb` *(Downloaded manually from VeraCrypt for offline installation)*
+   - `system_cache.dat` *(Your renamed VeraCrypt container)*
+   - `veracrypt-*.deb` and `libwx*.deb`
    - `scripts/setup.sh`
    - `scripts/fallback-setup.sh`
+   *(Notice: No mention of "hidden" or "vault" here!)*
 
-2. **Inside the mounted VeraCrypt Vault** (`/media/veracrypt1/`):
+2. **Inside the mounted Hidden Volume**:
    - `scripts/ghost.sh`
    - `scripts/opsec-check.sh`
-   - `repo/mullvad-browser-linux-x86_64-*.tar.xz` *(Downloaded manually from Mullvad)*
-   - `repo/kali-anonsurf/` *(Cloned from GitHub)*
+   - `scripts/lib/verify-tor.sh`
+   - `repo/mullvad-browser-linux-x86_64-*.tar.xz`
+   - `repo/kali-anonsurf/`
 
 ---
 
