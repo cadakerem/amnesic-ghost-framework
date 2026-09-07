@@ -58,6 +58,9 @@ This framework protects against specific threats but relies heavily on the user'
 2. **OpSec Failures:** Logging into personal accounts (e.g., personal email, social media) while using this framework will instantly deanonymize the session.
 3. **Advanced Global Adversaries:** Entities capable of monitoring a large percentage of the Tor network nodes.
 4. **Single-Source Time Sync:** The system synchronizes its hardware clock by fetching the HTTP Date header strictly from `check.torproject.org` over Tor. It does not use cross-referenced multi-source time synchronization (like Tails' `sdwdate`). If this endpoint is compromised, spoofed, or undergoing an MITM attack, the time synchronization could be manipulated.
+5. **Flash Memory Wear-Leveling (Hardware Flaw):** Flash-based media (USB drives, SSDs) utilize a controller that physically remaps writes across different cells to extend lifespan. VeraCrypt explicitly warns against using Hidden Volumes on flash media. Deleting or overwriting data in the Outer Volume does NOT guarantee the physical flash block was overwritten, leaving traces of the old data in unallocated physical blocks that hardware-level forensics can recover, potentially exposing the Hidden Volume's existence.
+6. **Entropy Analysis Detection:** Naming the vault `system_cache.dat` is merely superficial camouflage. Forensic tools (e.g., TCHunt) do not look at filenames; they look for large blocks of high entropy data lacking magic bytes and divisible by 512. The file will statistically stand out as an encrypted container during an audit.
+7. **RAM Forensics (Cold Boot):** While the framework is designed to be amnesic, bash variables (like passwords typed during vault creation on the host prep machine) reside in RAM as plain text. Bash does not securely wipe memory. A cold-boot attack immediately after execution could extract these.
 
 ---
 

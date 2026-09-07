@@ -18,11 +18,31 @@ read -p "Enter Hidden Volume size (e.g., 1G, 200M): " INNER_SIZE
 echo "??  NOTE: Ensure Hidden Volume is considerably smaller than Outer Volume."
 echo ""
 
-# Securely read passwords
-read -s -p "Enter OUTER Volume Password (Dummy/Decoy): " OUTER_PASS
+# Securely read passwords with confirmation
+while true; do
+    read -s -p "Enter OUTER Volume Password (Dummy/Decoy): " OUTER_PASS
+    echo ""
+    read -s -p "Confirm OUTER Volume Password: " OUTER_PASS2
+    echo ""
+    if [ "$OUTER_PASS" = "$OUTER_PASS2" ]; then
+        break
+    else
+        echo "? Passwords do not match! Try again."
+    fi
+done
+
 echo ""
-read -s -p "Enter HIDDEN Volume Password (Ghost Framework): " INNER_PASS
-echo ""
+while true; do
+    read -s -p "Enter HIDDEN Volume Password (Ghost Framework): " INNER_PASS
+    echo ""
+    read -s -p "Confirm HIDDEN Volume Password: " INNER_PASS2
+    echo ""
+    if [ "$INNER_PASS" = "$INNER_PASS2" ]; then
+        break
+    else
+        echo "? Passwords do not match! Try again."
+    fi
+done
 
 if [ "$OUTER_PASS" = "$INNER_PASS" ]; then
     echo "? ERROR: Outer and Inner passwords MUST be different!"
@@ -48,5 +68,4 @@ echo "? Vault created successfully at $TARGET_PATH"
 echo ""
 echo "??  CRITICAL PLAUSIBLE DENIABILITY REQUIREMENT ??"
 echo "You MUST now organically populate the Outer Volume with real, boring files"
-echo "over a period of time. Do NOT use automation scripts to generate dummy data,"
-echo "as forensic analysts can easily detect uniform timestamps and entropy patterns."
+echo "over a period of time. Do NOT use automation scripts to generate dummy data."
