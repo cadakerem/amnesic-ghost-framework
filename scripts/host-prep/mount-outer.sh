@@ -8,11 +8,11 @@ set -o pipefail
 echo "============================================="
 echo "   ??? SAFE MOUNT (OUTER VOLUME) ???"
 echo "============================================="
-read -p "Enter path to container (e.g., /run/media/user/USB/sys_cache.dat): " TARGET_PATH
+read -r -p "Enter path to container (e.g., /run/media/user/USB/sys_cache.dat): " TARGET_PATH
 
-read -s -p "Enter OUTER Volume Password: " OUTER_PASS
+read -r -s -p "Enter OUTER Volume Password: " OUTER_PASS
 echo ""
-read -s -p "Enter HIDDEN Volume Password (Required to protect it): " INNER_PASS
+read -r -s -p "Enter HIDDEN Volume Password (Required to protect it): " INNER_PASS
 echo ""
 
 sudo mkdir -p /mnt/outer_vault

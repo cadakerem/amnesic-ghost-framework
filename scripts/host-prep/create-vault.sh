@@ -12,18 +12,18 @@ echo "This script safely creates a VeraCrypt Hidden Volume."
 echo "It must be executed on a trusted host machine."
 echo ""
 
-read -p "Enter path to create container (e.g., /run/media/user/USB/sys_cache.dat): " TARGET_PATH
-read -p "Enter total Outer Volume size (e.g., 2G, 500M): " OUTER_SIZE
-read -p "Enter Hidden Volume size (e.g., 1G, 200M): " INNER_SIZE
+read -r -p "Enter path to create container (e.g., /run/media/user/USB/sys_cache.dat): " TARGET_PATH
+read -r -p "Enter total Outer Volume size (e.g., 2G, 500M): " OUTER_SIZE
+read -r -p "Enter Hidden Volume size (e.g., 1G, 200M): " INNER_SIZE
 
 echo "??  NOTE: Ensure Hidden Volume is considerably smaller than Outer Volume."
 echo ""
 
 # Securely read passwords with confirmation
 while true; do
-    read -s -p "Enter OUTER Volume Password (Dummy/Decoy): " OUTER_PASS
+    read -r -s -p "Enter OUTER Volume Password (Dummy/Decoy): " OUTER_PASS
     echo ""
-    read -s -p "Confirm OUTER Volume Password: " OUTER_PASS2
+    read -r -s -p "Confirm OUTER Volume Password: " OUTER_PASS2
     echo ""
     if [ "$OUTER_PASS" = "$OUTER_PASS2" ]; then
         break
@@ -34,9 +34,9 @@ done
 
 echo ""
 while true; do
-    read -s -p "Enter HIDDEN Volume Password (Ghost Framework): " INNER_PASS
+    read -r -s -p "Enter HIDDEN Volume Password (Ghost Framework): " INNER_PASS
     echo ""
-    read -s -p "Confirm HIDDEN Volume Password: " INNER_PASS2
+    read -r -s -p "Confirm HIDDEN Volume Password: " INNER_PASS2
     echo ""
     if [ "$INNER_PASS" = "$INNER_PASS2" ]; then
         break
