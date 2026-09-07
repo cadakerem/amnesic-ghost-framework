@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+# shellcheck disable=SC1091
 source "$(dirname "$0")/lib/verify-tor.sh"
 LOG_FILE="/var/log/ghost-fallback.log"
 sudo touch "$LOG_FILE"
@@ -11,15 +12,15 @@ echo "============================================="
 echo "This script is used when offline packages are corrupted."
 echo "It rebuilds the environment via minimum IP disclosure."
 
-echo "[1/4] Downloading Anonsurf dependencies via Clear-Net..."
+echo "[1/5] Downloading Anonsurf dependencies via Clear-Net..."
 sudo apt update
 sudo apt install -y tor secure-delete i2p
 
-echo "[2/4] Cloning and installing Anonsurf..."
+echo "[2/5] Cloning and installing Anonsurf..."
 git clone https://github.com/Und3rf10w/kali-anonsurf.git /tmp/kali-anonsurf
 cd /tmp/kali-anonsurf && sudo bash installer.sh
 
-echo "[3/4] Initializing Tor Tunnel (You are now anonymous)..."
+echo "[3/5] Initializing Tor Tunnel (You are now anonymous)..."
 sudo anonsurf start
 
 echo "[ TEST ] Verifying Tor Connectivity before downloading sensitive packages..."

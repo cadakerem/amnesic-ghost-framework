@@ -6,6 +6,7 @@ IFACE=${1:-"wlan0"}
 REAL_USER=${SUDO_USER:-kali}
 LOG_FILE="/var/log/ghost-setup.log"
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/lib/verify-tor.sh"
 
 # Clear previous log
@@ -21,7 +22,7 @@ if ! ip link show "$IFACE" > /dev/null 2>&1; then
 fi
 
 sudo ip link set "$IFACE" down
-if ! sudo macchanger -r "$IFACE" >> "$LOG_FILE" 2>&1; then
+if ! sudo macchanger -r "$IFACE" 2>&1 | tee -a "$LOG_FILE" > /dev/null; then
     echo "? CRITICAL ERROR: macchanger failed to spoof MAC address!"
     echo "Aborting Ghost Mode immediately to prevent physical hardware tracking."
     exit 1
@@ -30,17 +31,17 @@ sudo ip link set "$IFACE" up
 echo "? MAC spoofing successful."
 
 echo "[2/6] Disabling IPv6 and Setting local Timezone to UTC..."
-sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 >> "$LOG_FILE" 2>&1
-sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 >> "$LOG_FILE" 2>&1
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 2>&1 | tee -a "$LOG_FILE" > /dev/null
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 2>&1 | tee -a "$LOG_FILE" > /dev/null
 sudo timedatectl set-timezone UTC
 
 echo "[3/6] Installing all privacy packages OFFLINE (Logs in $LOG_FILE)..."
-if ! sudo dpkg -i "$REPO"/*.deb >> "$LOG_FILE" 2>&1; then
+if ! sudo dpkg -i "$REPO"/*.deb 2>&1 | tee -a "$LOG_FILE" > /dev/null; then
     echo "? ERROR: Failed to install privacy packages (.deb)."
     exit 1
 fi
 
-if ! (cd "$REPO/kali-anonsurf" && sudo bash installer.sh >> "$LOG_FILE" 2>&1); then
+if ! (cd "$REPO/kali-anonsurf" && sudo bash installer.sh 2>&1 | tee -a "$LOG_FILE" > /dev/null); then
     echo "? ERROR: Failed to install Anonsurf."
     exit 1
 fi
@@ -52,7 +53,7 @@ if [ ! -d "/tmp/mullvad-browser" ]; then
 fi
 
 if [ -d "/home/$REAL_USER/Desktop" ]; then
-    cat << DESKTOP_EOF | sudo -u "$REAL_USER" tee /home/$REAL_USER/Desktop/Mullvad-Ghost.desktop > /dev/null
+    cat << DESKTOP_EOF | sudo -u "$REAL_USER" tee /home/"$REAL_USER"/Desktop/Mullvad-Ghost.desktop > /dev/null
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -63,7 +64,7 @@ Icon=/tmp/mullvad-browser/Browser/browser/chrome/icons/default/default128.png
 Terminal=false
 Categories=Network;WebBrowser;Security;
 DESKTOP_EOF
-    sudo chmod +x /home/$REAL_USER/Desktop/Mullvad-Ghost.desktop
+    sudo chmod +x /home/"$REAL_USER"/Desktop/Mullvad-Ghost.desktop
 fi
 
 echo ""
@@ -77,7 +78,7 @@ read -r -p "Press ENTER after the connection is established..."
 
 echo ""
 echo "[5/6] Initializing Tor Tunnel (Anonsurf)..."
-if ! sudo anonsurf start >> "$LOG_FILE" 2>&1; then
+if ! sudo anonsurf start 2>&1 | tee -a "$LOG_FILE" > /dev/null; then
     echo "? CRITICAL ERROR: Anonsurf failed to start."
     echo "Aborting Ghost Mode. You are NOT anonymous."
     exit 1
