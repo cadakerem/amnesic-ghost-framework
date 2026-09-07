@@ -3,6 +3,7 @@
 # Helper to safely mount the Outer Volume without destroying the Hidden Volume.
 
 set -e
+set -o pipefail
 
 echo "============================================="
 echo "   ??? SAFE MOUNT (OUTER VOLUME) ???"

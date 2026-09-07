@@ -3,6 +3,7 @@
 # Run this on a secure HOST machine, NOT on the final USB drive.
 
 set -e
+set -o pipefail
 
 echo "============================================="
 echo "   ??? HIDDEN VAULT AUTOMATION ???"

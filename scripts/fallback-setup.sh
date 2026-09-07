@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 # shellcheck disable=SC1091
 source "$(dirname "$0")/lib/verify-tor.sh"
 LOG_FILE="/var/log/ghost-fallback.log"

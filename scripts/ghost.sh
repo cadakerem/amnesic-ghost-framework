@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 
 REPO="/media/veracrypt1/repo"
 IFACE=${1:-"wlan0"}

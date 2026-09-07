@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 
 DEPO=$(dirname "$(realpath "$0")")/..
 
