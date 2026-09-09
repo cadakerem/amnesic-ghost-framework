@@ -4,10 +4,18 @@
 function verify_tor_connectivity() {
     local LOG_FILE="${1:?LOG_FILE argument is required to prevent silent failures}"
     
-    echo "[ TEST ] Verifying Tor Connectivity..."
+    echo "[ TEST ] Verifying Tor Connectivity (Waiting for Tor circuits to build...)"
     local TOR_RESP
     local CURL_EXIT=0
-    TOR_RESP=$(curl -s --max-time 10 https://check.torproject.org/api/ip) || CURL_EXIT=$?
+    
+    for i in {1..5}; do
+        TOR_RESP=$(curl -s --max-time 15 https://check.torproject.org/api/ip) || CURL_EXIT=$?
+        if [ $CURL_EXIT -eq 0 ] && echo "$TOR_RESP" | grep -q 'IsTor":true'; then
+            break
+        fi
+        echo "--> Circuit not ready yet (curl exit $CURL_EXIT). Retrying in 5 seconds... ($i/5)"
+        sleep 5
+    done
     
     if [ $CURL_EXIT -eq 60 ]; then
         echo "? CRITICAL ERROR: TLS Certificate verification failed (curl exit 60)!"
