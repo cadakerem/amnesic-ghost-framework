@@ -28,7 +28,7 @@ The base operating system is Kali Linux running in Live Mode.
 ### The Cryptographic Layer (VeraCrypt Vault)
 To store necessary tools and sensitive information persistently without compromising the amnesic nature of the OS, an encrypted container is utilized.
 - **Camouflage:** The container file is superficially named (e.g., `system_cache.dat`) and placed in the unencrypted USB partition to avoid casual suspicion.
-- **Plausible Deniability:** To survive forced password disclosure (rubber-hose cryptanalysis), the framework mandates the use of VeraCrypt's true **Hidden Volume** feature (an inner volume nested inside a decoy outer volume).
+- **Data Obfuscation:** To protect sensitive information in compromised environments, the framework utilizes VeraCrypt's **Hidden Volume** feature (an inner volume nested inside a decoy outer volume).
 
 ### The Routing Layer (Anonsurf & Tor)
 Once the system is active, all traffic must be routed through the Tor network.
@@ -48,7 +48,7 @@ Once the system is active, all traffic must be routed through the Tor network.
 This framework protects against specific threats but relies heavily on the user's operational discipline.
 
 **In-Scope Threats (What this protects against):**
-1. **Local Forensic Analysis (Post-Seizure):** If the USB drive is seized while powered off, the adversary will only find a standard Kali Live ISO and random encrypted data. No browsing history, IP logs, or system artifacts remain on the host machine.
+1. **Post-Incident Forensic Recovery:** If the USB drive is analyzed offline, the examiner will only find a standard Kali Live ISO and random encrypted data. No browsing history, IP logs, or system artifacts remain on the host machine.
 2. **Network Interception (ISP/Local Admin):** The local network administrator will only see encrypted Tor traffic.
 3. **Hardware Tracking:** The original MAC address of the host machine is spoofed, preventing network-level device tracking across sessions.
 4. **Timezone/Locale Correlation:** By syncing the system clock to UTC over Tor, adversaries cannot correlate the user's physical timezone.
@@ -86,8 +86,8 @@ To preserve strict **Plausible Deniability**, you must NEVER run vault creation 
 For this reason, we provide a standalone `scripts/host-prep/` directory. **You must run these scripts on a secure, trusted host machine BEFORE deploying to the USB drive.**
 
 > [!CAUTION]
-> **Plausible Deniability (Rubber-Hose Cryptanalysis):** A forensic analyst will easily identify a large, high-entropy file as a cryptographic container, regardless of its superficial name (e.g., `system_cache.dat`). 
-> To survive forced password disclosure, you **must** use VeraCrypt's **Hidden Volume** feature. If coerced, you surrender the password to the Outer Volume only.
+> **Cryptographic Visibility:** A security analyst will easily identify a large, high-entropy file as a cryptographic container, regardless of its superficial name (e.g., `system_cache.dat`). 
+> To ensure maximum data privacy, you **must** use VeraCrypt's **Hidden Volume** feature. This provides a secondary layer of protection for sensitive research data.
 
 **Step A: Create the Vault on a Trusted Host**
 Run the automated creation script from your trusted host machine:
