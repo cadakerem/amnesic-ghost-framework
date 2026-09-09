@@ -6,8 +6,8 @@ function verify_tor_connectivity() {
     
     echo "[ TEST ] Verifying Tor Connectivity..."
     local TOR_RESP
-    TOR_RESP=$(curl -s --max-time 10 https://check.torproject.org/api/ip)
-    local CURL_EXIT=$?
+    local CURL_EXIT=0
+    TOR_RESP=$(curl -s --max-time 10 https://check.torproject.org/api/ip) || CURL_EXIT=$?
     
     if [ $CURL_EXIT -eq 60 ]; then
         echo "? CRITICAL ERROR: TLS Certificate verification failed (curl exit 60)!"
@@ -40,7 +40,7 @@ function sync_clock_via_tor() {
     
     echo "[ TIME ] Syncing System Clock via Tor Network..."
     local REAL_TIME
-    REAL_TIME=$(curl -sI --max-time 15 https://check.torproject.org | grep -i '^Date:' | sed 's/^[Dd]ate: //g' | tr -d '\r')
+    REAL_TIME=$(curl -sI --max-time 15 https://check.torproject.org | grep -i '^Date:' | sed 's/^[Dd]ate: //g' | tr -d '\r') || true
     
     if [ -n "$REAL_TIME" ]; then
         sudo date -s "$REAL_TIME" > /dev/null
