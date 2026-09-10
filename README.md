@@ -1,4 +1,4 @@
-# Amnesic Ghost Framework 👻
+# Amnesic Ghost Framework
 
 A privacy-focused Kali Linux Live environment designed to minimize persistent local artifacts, isolate sensitive data, and route network traffic securely through Tor.
 
@@ -6,7 +6,7 @@ A privacy-focused Kali Linux Live environment designed to minimize persistent lo
 
 ---
 
-## 🛠️ Tech Stack & Core Technologies
+## Tech Stack & Core Technologies
 - **Core OS & Automation:** Kali Linux (Debian), Bash Shell Scripting, `tmpfs` (RAM Disk)
 - **Cryptography:** VeraCrypt (AES-256, Hidden Volumes), Ext4/exFAT Filesystems
 - **Network Routing:** Tor Network, `iptables` (Transparent Proxying via Anonsurf)
@@ -128,13 +128,13 @@ Once generated, copy the container to your USB. The unencrypted partition must l
 
 To an external observer, the USB drive simply contains a standard Kali Linux installation. 
 
-### ✅ Step 1 — Offline Installation (VeraCrypt)
+### Step 1 — Offline Installation (VeraCrypt)
 After booting Kali Live, open a terminal **BEFORE connecting to the internet** and run the initial setup script to install VeraCrypt locally:
 ```bash
 sudo bash /run/media/kali/USB_DRIVE/scripts/setup.sh
 ```
 
-### ⚠️ Plan B — Online Installation (Fallback)
+### Plan B — Online Installation (Fallback)
 If the offline `.deb` packages on your USB become corrupted or lost, use the `fallback-setup.sh` script. This script operates on a **Minimum IP Disclosure** principle.
 - It briefly uses your real IP address *only* to run `apt update` and install the base Tor dependencies.
 - It immediately starts the Tor tunnel.
@@ -143,17 +143,17 @@ If the offline `.deb` packages on your USB become corrupted or lost, use the `fa
 sudo bash /run/media/kali/USB_DRIVE/scripts/fallback-setup.sh
 ```
 
-### ✅ Step 2 — Opening the Vault
+### Step 2 — Opening the Vault
 Open the VeraCrypt GUI, select the camouflaged vault file (`/run/media/kali/USB_DRIVE/hidden_vault.hc`), and click **Mount**.
 
-### ✅ Step 3 — Entering Ghost Mode
+### Step 3 — Entering Ghost Mode
 Once the vault is mounted, run the core script. The script performs MAC spoofing **offline** before associating with any network, ensuring your real hardware MAC is never broadcasted. It then deploys all privacy tools and prepares the browser in RAM:
 ```bash
 sudo bash /media/veracrypt1/scripts/ghost.sh
 ```
 > **Note:** The script will pause and prompt you to connect to Wi-Fi. Press ENTER after connecting. It will automatically initialize Tor (Anonsurf) and sync the system clock.
 
-### ✅ Step 4 — Verification (Inspector)
+### Step 4 — Verification (Inspector)
 To ensure the traffic is routed correctly, run the independent inspection script:
 ```bash
 sudo bash /media/veracrypt1/scripts/opsec-check.sh
@@ -167,5 +167,5 @@ This script verifies your system state (MAC, IPv6, UTC) locally and automaticall
 > [!CAUTION]
 > **Test Site Logging:** Keep in mind that third-party leak testing sites (`dnsleaktest`, `amiunique`, etc.) log your Tor exit IP and browser fingerprint. In an extreme paranoia threat model, visiting these sites before conducting sensitive operations provides correlation data to the exit node and the site operator. Use them for educational verification, but close the browser and restart the framework for real operations.
 
-### ✅ Step 5 — Shutdown
+### Step 5 — Shutdown
 When your work is done, shut down the computer. The moment the system powers off, all data in RAM is wiped, leaving only the encrypted VeraCrypt vault on the USB drive.
