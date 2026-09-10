@@ -6,7 +6,7 @@ A privacy-focused Kali Linux Live environment designed to minimize persistent lo
 
 ---
 
-## Tech Stack & Core Technologies
+## 🛠️ Tech Stack & Core Technologies
 - **Core OS & Automation:** Kali Linux (Debian), Bash Shell Scripting, `tmpfs` (RAM Disk)
 - **Cryptography:** VeraCrypt (AES-256, Hidden Volumes), Ext4/exFAT Filesystems
 - **Network Routing:** Tor Network, `iptables` (Transparent Proxying via Anonsurf)
@@ -15,7 +15,7 @@ A privacy-focused Kali Linux Live environment designed to minimize persistent lo
 
 ---
 
-## 1. System Architecture
+## 🏗️ 1. System Architecture
 
 The Amnesic Ghost Framework is designed with a layered approach to ensure maximum privacy and data isolation.
 
@@ -79,7 +79,7 @@ Since security tools should never be distributed via third-party repositories, y
 
 ---
 
-## 4. Creating the Vault (Initial Setup)
+## 📦 4. Creating the Vault (Initial Setup)
 
 To preserve strict **Plausible Deniability**, you must NEVER run vault creation scripts from the unencrypted partition of the USB drive, nor should the USB drive contain scripts with words like "hidden" or "vault" in plain sight.
 
