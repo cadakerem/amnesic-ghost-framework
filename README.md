@@ -171,7 +171,7 @@ This script verifies your system state (MAC, IPv6, UTC) locally and automaticall
 When your work is done, shut down the computer. The moment the system powers off, all data in RAM is wiped, leaving only the encrypted VeraCrypt vault on the USB drive.
 
 ## 🧑‍💻 Developer & Contributions
-Developed by Kerem Barbaros Karnabat (@cadakerem).
+Developed by Kerem Barbaros Karnabat ([@cadakerem](https://github.com/cadakerem)).
 
 > **Note on Repository Structure:** This stealth framework is modularly designed with core payload generators in the `modules/` folder and execution logic in `src/`. Scripts are typically compiled directly into standalone executables or injected via the provided loaders.
 
