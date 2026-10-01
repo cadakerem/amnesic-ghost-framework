@@ -173,7 +173,7 @@ When your work is done, shut down the computer. The moment the system powers off
 ## 🧑‍💻 Developer & Contributions
 Developed by Kerem Barbaros Karnabat (@cadakerem).
 
-> **Note on Repository Structure:** [TODO: Add any specific notes about the repository structure here, e.g., source vs build artifacts.]
+> **Note on Repository Structure:** This stealth framework is modularly designed with core payload generators in the `modules/` folder and execution logic in `src/`. Scripts are typically compiled directly into standalone executables or injected via the provided loaders.
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [Issues page](../../issues).
 
